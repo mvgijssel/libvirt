@@ -1,0 +1,8 @@
+<network ipv6='yes'>
+  <name>vagrant-libvirt</name>
+  <uuid>8373f620-4c24-491b-a8b8-e04f71d37327</uuid>
+
+  <!-- https://libvirt.org/formatnetwork.html#elementsMetadata -->
+  <forward mode='bridge'/>
+  <bridge name='bridge9' />
+</network>

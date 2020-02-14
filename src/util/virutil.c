@@ -1053,7 +1053,7 @@ virSetUIDGID(uid_t uid, gid_t gid, gid_t *groups G_GNUC_UNUSED,
         return -1;
     }
 
-# if HAVE_SETGROUPS
+# if HAVE_SETGROUPS && !defined(__APPLE__)
     if (gid != (gid_t)-1 && setgroups(ngroups, groups) < 0) {
         virReportSystemError(errno, "%s",
                              _("cannot set supplemental groups"));

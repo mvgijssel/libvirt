@@ -31,6 +31,9 @@
 #include "virstring.h"
 #include "datatypes.h"
 
+#include <execinfo.h>
+#include <stdio.h>
+
 #include <unistd.h>
 #include <sys/types.h>
 #ifndef WIN32
@@ -469,6 +472,15 @@ int virNetDevTapCreate(char **ifname G_GNUC_UNUSED,
                        size_t tapfdSize G_GNUC_UNUSED,
                        unsigned int flags G_GNUC_UNUSED)
 {
+
+    void* callstack[128];
+    int i, frames = backtrace(callstack, 128);
+    char** strs = backtrace_symbols(callstack, frames);
+    for (i = 0; i < frames; ++i) {
+        printf("%s\n", strs[i]);
+    }
+    free(strs);
+
     virReportSystemError(ENOSYS, "%s",
                          _("Unable to create TAP devices on this platform"));
     return -1;
@@ -476,6 +488,14 @@ int virNetDevTapCreate(char **ifname G_GNUC_UNUSED,
 int virNetDevTapDelete(const char *ifname G_GNUC_UNUSED,
                        const char *tunpath G_GNUC_UNUSED)
 {
+    void* callstack[128];
+    int i, frames = backtrace(callstack, 128);
+    char** strs = backtrace_symbols(callstack, frames);
+    for (i = 0; i < frames; ++i) {
+        printf("%s\n", strs[i]);
+    }
+    free(strs);
+
     virReportSystemError(ENOSYS, "%s",
                          _("Unable to delete TAP devices on this platform"));
     return -1;

@@ -1,0 +1,14 @@
+<network ipv6='yes'>
+  <name>vagrant-libvirt</name>
+  <uuid>8373f620-4c24-491b-a8b8-e04f71d37327</uuid>
+
+  <forward mode='open'/>
+  <bridge name='bridge9' stp='on' delay='0'/>
+
+  <mac address='52:54:00:91:53:f7'/>
+  <ip address='192.168.121.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.121.1' end='192.168.121.254'/>
+    </dhcp>
+  </ip>
+</network>

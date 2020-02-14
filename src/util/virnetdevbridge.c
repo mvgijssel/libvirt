@@ -444,14 +444,35 @@ virNetDevBridgeCreate(const char *brname,
     if ((s = virNetDevSetupControl("bridge", &ifr)) < 0)
         return -1;
 
-    if (ioctl(s, SIOCIFCREATE2, &ifr) < 0) {
-        virReportSystemError(errno, "%s",
-                             _("Unable to create bridge device"));
+    // copied from src/util/virnetdev.c:571
+    if (virStrcpyStatic(ifr.ifr_name, brname) < 0) {
+        virReportSystemError(ERANGE,
+                             _("Network interface name '%s' is too long"),
+                             brname);
         return -1;
     }
 
-    if (virNetDevSetName(ifr.ifr_name, brname) == -1)
+    int result = ioctl(s, SIOCIFCREATE2, &ifr);
+
+    /* virReportSystemError(ERANGE, */
+    /*                      "BRIDGE NAME: '%s'", */
+    /*                      brname); */
+
+    /* virReportSystemError(ERANGE, */
+    /*                      "Result SIOCIFCREATE2: '%d'", */
+    /*                      result); */
+
+    virLogMessage(&virLogSelf, VIR_LOG_INFO,
+                  "virnetdevbridge.c", 466, "virNetDevBridgeCreate",
+                  NULL, "Trying to create bridge %s", brname);
+
+    if (result < 0) {
+        virReportSystemError(errno, "%s", _("Unable to create bridge device"));
         return -1;
+    }
+
+    /* if (virNetDevSetName(ifr.ifr_name, brname) == -1) */
+    /*     return -1; */
 
     if (virNetDevSetMAC(brname, mac) < 0) {
         virErrorPtr savederr;
